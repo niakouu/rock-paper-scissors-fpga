@@ -44,29 +44,27 @@ architecture Behavioral of PulseGen is
     type State is (WAITING,ACCEPT);
     signal CurState : State := ACCEPT;
 begin
-    
-process(CLK, RST)
-begin
-    if(RST = '1') then
-        S <= '0';
-        CurState <= ACCEPT;
-    elsif(CLK'event AND CLK = '1') then
-        case CurState is
-            when ACCEPT =>
-                if (E = '1') then
-                    S <= '1';
-                    CurState <= WAITING;
-                else
-                    S <= '0';
-                end if;
-            when WAITING =>
-                if (E = '1') then
-                    S <= '0';
-                else 
-                    CurState <= ACCEPT;
-                end if;
-        end case;
-    end if;
-end process;
-
+    process(CLK, RST)
+        begin
+            if(RST = '1') then
+                S <= '0';
+                CurState <= ACCEPT;
+            elsif(CLK'event AND CLK = '1') then
+                case CurState is
+                    when ACCEPT =>
+                        if (E = '1') then
+                            S <= '1';
+                            CurState <= WAITING;
+                        else
+                            S <= '0';
+                        end if;
+                    when WAITING =>
+                        if (E = '1') then
+                            S <= '0';
+                        else 
+                            CurState <= ACCEPT;
+                        end if;
+                end case;
+            end if;
+        end process;
 end Behavioral;

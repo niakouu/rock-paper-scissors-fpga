@@ -43,13 +43,12 @@ entity TopLvlDesign is
 end TopLvlDesign;
 
 architecture Behavioral of TopLvlDesign is
-
     component DEBOUNCE IS
-      PORT(
+      Port(
         clk     : IN  STD_LOGIC;  --input clock
         button  : IN  STD_LOGIC;  --input signal to be debounced
         result  : OUT STD_LOGIC); --debounced signal
-    END component;
+    end component;
     
     component PulseGen is
         Port ( CLK : in STD_LOGIC;
@@ -101,5 +100,4 @@ begin
             CLK => CLK, DISP0 => disp0, DISP1 => disp1, DISP2 => disp2,
             DISP3 => disp3, DISP4 => disp4, DISP5 => disp5, DISP6 => disp6,
             DISP7 => disp7, SEVEN_SEG => SEVEN_SEG, AN => AN);
-
 end Behavioral;

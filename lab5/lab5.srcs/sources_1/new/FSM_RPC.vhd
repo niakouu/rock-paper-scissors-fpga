@@ -55,161 +55,158 @@ architecture Behavioral of FSM_RPC is
     
     signal NextState, CurState : State := MENU;
     signal choice1, choice2 : RPC;
-    signal whoWins : Winner;
-    signal tmpValue : STD_LOGIC_VECTOR (4 downto 0);
     signal score1 : integer := 0;
     signal score2 : integer := 0;
     
-begin
-
-process(CLK, RST, V, R, P, C, CurState)
-begin
-    if(RST = '1') then
-        CurState <= MENU;
-        score1 <= 0;
-        score2 <= 0;
-        choice1 <= NEITHER;
-        choice2 <= NEITHER;
-    elsif(CLK'event and CLK = '1') then
-        if (V = '1') then
-            CurState <= NextState;
-        end if;
-        case (CurState) is
-            when PLAYER1 =>
-                if (R = '1') then
-                    choice1 <= ROCK;
-                elsif (P = '1') then
-                    choice1 <= PAPER;
-                elsif (C = '1') then
-                    choice1 <= SCISSORS;
-                end if;
-            when PLAYER2 => 
-                if (R = '1') then
-                    choice2 <= ROCK;
-                elsif (P = '1') then
-                    choice2 <= PAPER;
-                elsif (C = '1') then
-                    choice2 <= SCISSORS;
-                end if;
-            when CALCULATE =>
-                if (choice1 = choice2) then
-                    whoWins <= BOTH;
-                elsif((choice1 = SCISSORS AND choice2 = PAPER) OR
+    function player1Wins (choice1 : RPC; choice2 : RPC) return boolean is
+        begin
+            return (choice1 = SCISSORS AND choice2 = PAPER) OR
                    (choice1 = PAPER AND choice2 = ROCK) OR
-                   (choice1 = ROCK AND choice2 = SCISSORS)) then
-                    whoWins <= PLAYER1;
-                    score1 <= score1 + 1;
-                else 
-                    whoWins <= PLAYER2;
-                    score2 <= score2 + 1;
-                end if;
-                CurState <= RESULT;
-            when RESULT => 
-                
-            when MENU =>
-                choice1 <= NEITHER;
-                choice2 <= NEITHER;
-        end case;
-    end if;
-end process;
-
-process(CurState, choice1, choice2, score1, score2)
-begin
-    NextState <= CurState;
-    case(CurState) is 
-        when MENU =>
-            NextState <= PLAYER1;
-            Disp0 <= std_logic_vector(to_unsigned(score2 mod 16, Disp0'length));
-            Disp1 <= std_logic_vector(to_unsigned(score2 / 16, Disp1'length));
-            Disp2 <= std_logic_vector(to_unsigned(score1 mod 16, Disp2'length));
-            Disp3 <= std_logic_vector(to_unsigned(score1 / 16, Disp3'length));
-            Disp4 <= "11110";
-            Disp5 <= "11110";
-            Disp6 <= "11110";
-            Disp7 <= "11110";
-        when PLAYER1 =>
-            NextState <= PLAYER2;
-            Disp4 <= "11110";
-            Disp5 <= "11110";
-            Disp6 <= "00001";
-            Disp7 <= "10001";
-            case (choice1) is
+                   (choice1 = ROCK AND choice2 = SCISSORS);
+        end function;
+        
+    function playerChoice (choice : RPC; R : STD_LOGIC; P : STD_LOGIC; C : STD_LOGIC) return RPC is
+        begin
+            if (R = '1') then
+                return ROCK;
+            elsif (P = '1') then
+                return PAPER;
+            elsif (C = '1') then
+                return SCISSORS;
+            else 
+                return choice;
+            end if;
+        end function;
+    
+    function disChoice (choice : RPC) return STD_LOGIC_VECTOR is
+        begin
+            case (choice) is
                 when ROCK =>
-                    tmpValue <= "10000";
+                    return "10000";
                 when PAPER =>
-                    tmpValue <= "10001";
+                    return "10001";
                 when SCISSORS =>
-                    tmpValue <= "10010";
+                    return "10010";
                 when NEITHER =>
-                    NextState <= PLAYER1;
-                    tmpValue <= "11110";
+                    return "11110";
             end case;
-            Disp0 <= tmpValue;
-            Disp1 <= tmpValue;
-            Disp2 <= tmpValue;
-            Disp3 <= tmpValue;
-       when PLAYER2 =>
-            NextState <= CALCULATE;
-            Disp4 <= "11110";
-            Disp5 <= "11110";
-            Disp6 <= "00010";
-            Disp7 <= "10001";
-            case (choice2) is
-                when ROCK =>
-                    tmpValue <= "10000";
-                when PAPER =>
-                    tmpValue <= "10001";
-                when SCISSORS =>
-                    tmpValue <= "10010";
-                when NEITHER =>
-                    NextState <= PLAYER2;
-                    tmpValue <= "11110";
-           end case;
-           Disp0 <= tmpValue;
-           Disp1 <= tmpValue;
-           Disp2 <= tmpValue;
-           Disp3 <= tmpValue;
-        when CALCULATE =>
-            
-        when RESULT =>
-            NextState <= MENU;
-            Disp0 <= std_logic_vector(to_unsigned(score2 mod 16, Disp0'length));
-            Disp1 <= std_logic_vector(to_unsigned(score2 / 16, Disp1'length));
-            
-            Disp2 <= std_logic_vector(to_unsigned(score1 mod 16, Disp2'length));
-            Disp3 <= std_logic_vector(to_unsigned(score1 / 16, Disp3'length));
-            
-            Disp4 <= "11110";
-            
-            case (choice1) is
-                when ROCK =>
-                    Disp7 <= "10000";
-                when PAPER =>
-                    Disp7 <= "10001";
-                when SCISSORS =>
-                    Disp7 <= "10010";
-                when NEITHER =>
-                    Disp7 <= "11110";
-            end case;
-            case (choice2) is
-                when ROCK =>
-                    Disp6 <= "10000";
-                when PAPER =>
-                    Disp6 <= "10001";
-                when SCISSORS =>
-                    Disp6 <= "10010";
-                when NEITHER =>
-                    Disp6 <= "11110";
-            end case;
+        end function;
+    
+    function disWinner (choice1 : RPC; choice2 : RPC) return STD_LOGIC_VECTOR is
+        variable whoWins : Winner;
+        begin
+            if (choice1 = choice2) then
+                whoWins := BOTH;
+            elsif(player1Wins(choice1, choice2)) then
+                whoWins := PLAYER1;
+            else 
+                whoWins := PLAYER2;
+            end if;
             case (whoWins) is
                 when PLAYER1 =>
-                    Disp5 <= "00001";
+                    return "00001";
                 when PLAYER2 =>
-                    Disp5 <= "00010";
+                    return "00010";
                 when BOTH =>
-                    Disp5 <= "01110";
+                    return "01110";
             end case;
-    end case;
-end process;
-
-end Behavioral;
+        end function;
+    
+    function disScoreDigit1 (score : integer; length : integer) return STD_LOGIC_VECTOR is
+        begin
+            return STD_LOGIC_VECTOR(to_unsigned(score mod 16, length));
+        end function;
+        
+    function disScoreDigit2 (score : integer; length : integer) return STD_LOGIC_VECTOR is
+        begin
+            return STD_LOGIC_VECTOR(to_unsigned(score / 16, length));
+        end function;
+   
+    begin
+        process(CLK, RST, V, R, P, C, CurState)
+            begin
+                if(RST = '1') then
+                    CurState <= MENU;
+                    score1 <= 0;
+                    score2 <= 0;
+                elsif(CLK'event and CLK = '1') then
+                    if (V = '1') then
+                        CurState <= NextState;
+                    end if;
+                    case (CurState) is
+                        when PLAYER1 =>
+                            NextState <= PLAYER2;
+                            choice1 <= playerChoice(choice1, R, P, C);
+                            if (choice1 = NEITHER) then
+                                NextState <= PLAYER1;
+                            end if;
+                        when PLAYER2 => 
+                            NextState <= CALCULATE;
+                            choice2 <= playerChoice(choice2, R, P, C);
+                            if (choice2 = NEITHER) then
+                                NextState <= PLAYER2;
+                            end if;
+                        when CALCULATE =>
+                            if(player1Wins(choice1, choice2)) then
+                                score1 <= score1 + 1;
+                            else
+                                score2 <= score2 + 1;
+                            end if;
+                            CurState <= RESULT;
+                        when RESULT => 
+                            NextState <= MENU;
+                        when MENU =>
+                            NextState <= PLAYER1;
+                            choice1 <= NEITHER;
+                            choice2 <= NEITHER;
+                    end case;
+                end if;
+            end process;
+    
+        process(CurState, choice1, choice2, score1, score2)
+        variable tmpValue : STD_LOGIC_VECTOR (4 downto 0);
+            begin
+                case(CurState) is 
+                    when MENU =>
+                        Disp0 <= disScoreDigit1(score2, Disp0'length);
+                        Disp1 <= disScoreDigit2(score2, Disp1'length);
+                        Disp2 <= disScoreDigit1(score1, Disp2'length);
+                        Disp3 <= disScoreDigit2(score1, Disp3'length);
+                        Disp4 <= "11110";
+                        Disp5 <= "11110";
+                        Disp6 <= "11110";
+                        Disp7 <= "11110";
+                    when PLAYER1 =>
+                        tmpValue := disChoice(choice1);
+                        Disp0 <= tmpValue;
+                        Disp1 <= tmpValue;
+                        Disp2 <= tmpValue;
+                        Disp3 <= tmpValue;
+                        Disp4 <= "11110";
+                        Disp5 <= "11110";
+                        Disp6 <= "00001";
+                        Disp7 <= "10001";
+                   when PLAYER2 =>
+                        tmpValue := disChoice(choice2);
+                        Disp0 <= tmpValue;
+                        Disp1 <= tmpValue;
+                        Disp2 <= tmpValue;
+                        Disp3 <= tmpValue;
+                        Disp4 <= "11110";
+                        Disp5 <= "11110";
+                        Disp6 <= "00010";
+                        Disp7 <= "10001";
+                    when CALCULATE =>
+                        
+                    when RESULT =>
+                        Disp0 <= disScoreDigit1(score2, Disp0'length);
+                        Disp1 <= disScoreDigit2(score2, Disp1'length);
+                        Disp2 <= disScoreDigit1(score1, Disp2'length);
+                        Disp3 <= disScoreDigit2(score1, Disp3'length);
+                        Disp4 <= "11110";
+                        Disp5 <= disWinner(choice1, choice2);
+                        Disp6 <= disChoice(choice2);
+                        Disp7 <= disChoice(choice1);
+                end case;
+            end process;
+    end Behavioral;

@@ -45,8 +45,6 @@ end TopLvlDesign;
 architecture Behavioral of TopLvlDesign is
 
     component DEBOUNCE IS
-      GENERIC(
-        counter_size  :  INTEGER := 19); --counter size (19 bits gives 10.5ms with 50MHz clock)
       PORT(
         clk     : IN  STD_LOGIC;  --input clock
         button  : IN  STD_LOGIC;  --input signal to be debounced

@@ -53,7 +53,8 @@ architecture Behavioral of FSM_RPC is
     type RPC is (ROCK, PAPER, SCISSORS, NEITHER);
     type Winner is (PLAYER1, PLAYER2, BOTH);
     
-    signal NextState, CurState : State := MENU;
+    signal CurState : State := MENU;
+    signal NextState : State := PLAYER1;
     signal choice1, choice2 : RPC;
     signal score1 : integer := 0;
     signal score2 : integer := 0;
@@ -124,9 +125,11 @@ architecture Behavioral of FSM_RPC is
    
     begin
         process(CLK, RST, V, R, P, C, CurState)
+        variable playChoice : RPC := NEITHER;
             begin
                 if(RST = '1') then
                     CurState <= MENU;
+                    NextState <= PLAYER1;
                     score1 <= 0;
                     score2 <= 0;
                 elsif(CLK'event and CLK = '1') then
@@ -136,25 +139,28 @@ architecture Behavioral of FSM_RPC is
                     case (CurState) is
                         when PLAYER1 =>
                             NextState <= PLAYER2;
-                            choice1 <= playerChoice(choice1, R, P, C);
-                            if (choice1 = NEITHER) then
+                            playChoice := playerChoice(choice1, R, P, C);
+                            choice1 <= playChoice;
+                            if (playChoice = NEITHER) then
                                 NextState <= PLAYER1;
                             end if;
                         when PLAYER2 => 
                             NextState <= CALCULATE;
-                            choice2 <= playerChoice(choice2, R, P, C);
-                            if (choice2 = NEITHER) then
+                            playChoice := playerChoice(choice2, R, P, C);
+                            choice2 <= playChoice;
+                            if (playChoice = NEITHER) then
                                 NextState <= PLAYER2;
                             end if;
                         when CALCULATE =>
-                            if(player1Wins(choice1, choice2)) then
+                            if( player1Wins(choice1, choice2)) then
                                 score1 <= score1 + 1;
-                            else
+                            elsif ( choice1 /= choice2 ) then
                                 score2 <= score2 + 1;
                             end if;
                             CurState <= RESULT;
-                        when RESULT => 
                             NextState <= MENU;
+                        when RESULT => 
+                            
                         when MENU =>
                             NextState <= PLAYER1;
                             choice1 <= NEITHER;

@@ -2,6 +2,8 @@
 
 This VHDL project aims to implement a Rock Paper Scissors game on an FPGA platform. The system includes five buttons (R, P, C, V, and RST) and eight 7-segment displays for providing visual feedback during the game. The implementation involves creating a state machine to manage the game flow and integrating various modules for button debouncing, pulse generation, and display management.
 
+Link on its implementation demo : https://youtube.com/shorts/TjoNQv_f1WM?feature=share
+
 ## Game Flow
 
 The game follows a structured flow:

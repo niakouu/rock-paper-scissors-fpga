@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="39" Path="X:/Documents/INF1500/lab5/lab5/lab5.xpr">
+<Project Version="7" Minor="39" Path="X:/Documents/INF1500/lab5/rpc/rpc.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="89eb7924193a488ea71af67ef1c6c4c5"/>
+    <Option Name="Id" Val="a862abe5e08b49a78ce808f61a9e3775"/>
     <Option Name="Part" Val="xc7a100tcsg324-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -22,7 +22,6 @@
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
-    <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
     <Option Name="IPCachePermission" Val="read"/>
     <Option Name="IPCachePermission" Val="write"/>
     <Option Name="EnableCoreContainer" Val="FALSE"/>
@@ -62,30 +61,40 @@
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sources_1/new/DEBOUNCE.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../lab5/lab5.srcs/sources_1/new/DEBOUNCE.vhd"/>
+          <Attr Name="ImportTime" Val="1699883488"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/FSM_RPC.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../lab5/lab5.srcs/sources_1/new/FSM_RPC.vhd"/>
+          <Attr Name="ImportTime" Val="1701706487"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/PulseGen.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../lab5/lab5.srcs/sources_1/new/PulseGen.vhd"/>
+          <Attr Name="ImportTime" Val="1701366916"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/gestAffichage.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../lab5/lab5.srcs/sources_1/new/gestAffichage.vhd"/>
+          <Attr Name="ImportTime" Val="1699883490"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/TopLvlDesign.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../lab5/lab5.srcs/sources_1/new/TopLvlDesign.vhd"/>
+          <Attr Name="ImportTime" Val="1701708374"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -99,6 +108,8 @@
       <Filter Type="Constrs"/>
       <File Path="$PSRCDIR/constrs_1/new/topLvlDesign.xdc">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../lab5/lab5.srcs/constrs_1/new/topLvlDesign.xdc"/>
+          <Attr Name="ImportTime" Val="1701112184"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
